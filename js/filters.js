@@ -49,8 +49,6 @@ function blend(start, end, alpha) {
     return start * (1 - alpha) + end * alpha;
 }
 
-// ----------- STUDENT CODE BEGIN ------------
-// ----------- Our reference solution uses 72 lines of code.
 // Compute the distance from pixel(x,y) to the given center
 function dFromCenter(x, y, center) {
     return Math.sqrt(Math.abs(x - center.x) ** 2 + Math.abs(y - center.y) ** 2);
@@ -63,7 +61,6 @@ function convolute(image, kernel, x, y) {
     size[0] = kernel.length;
     size[1] = kernel[0].length;
     let winR = (size[0] - 1) / 2;
-    //if (x === 0 && y === 98) debugger;
     for (let i = -winR; i <= winR; i++) {
         for (let j = -winR; j <= winR; j++) {
             let newX, newY;
@@ -73,9 +70,7 @@ function convolute(image, kernel, x, y) {
             if (y + j < 0) newY = image.height + y + j;
             else if (y + j >= image.height) newY = y + j - image.height;
             else newY = y + j;
-            //let temp = image.getPixel(newX, newY).multipliedBy(kernel[i + winR][j + winR]);
             pixel = pixel.plus(image.getPixel(newX, newY).multipliedBy(kernel[i + winR][j + winR]));
-            //if (x === 0 && y === 98) debugger;
         }
     }
     return pixel;
@@ -173,7 +168,6 @@ function colorDist(pixel, refPx) {
     dist = Math.sqrt(dist);
     return dist;
 }
-// ----------- STUDENT CODE END ------------
 
 ////////////////////////////////////////////////////////////////////////////////
 // Filters
@@ -193,8 +187,7 @@ Filters.brushFilter = function(image, radius, color, vertsString) {
 
     // draw a filled circle centered at every location in centers[].
     // radius and color are specified in function arguments.
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 10 lines of code.
+
     for (let i = 0; i < centers.length; i++) {
         for (var x = 0; x < image.width; x++) {
           for (var y = 0; y < image.height; y++) {
@@ -204,7 +197,6 @@ Filters.brushFilter = function(image, radius, color, vertsString) {
           }
         }
       }
-    // ----------- STUDENT CODE END ------------
 
     return image;
 };
@@ -217,8 +209,7 @@ Filters.softBrushFilter = function(image, radius, color, alpha_at_center, vertsS
     // draw a filled circle with opacity equals to alpha_at_center at the center of each circle
     // the opacity decreases linearly along the radius and becomes zero at the edge of the circle
     // radius and color are specified in function arguments.
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 20 lines of code.
+
     for (let i = 0; i < centers.length; i++) {
         for (let x = 0; x < image.width; x++) {
           for (let y = 0; y < image.height; y++) {
@@ -236,7 +227,6 @@ Filters.softBrushFilter = function(image, radius, color, alpha_at_center, vertsS
           }
         }
       }
-    // ----------- STUDENT CODE END ------------
 
     return image;
 };
@@ -274,8 +264,7 @@ Filters.brightnessFilter = function(image, ratio) {
 // value = (value - 0.5) * (tan ((contrast + 1) * PI/4) ) + 0.5;
 // Note that ratio is in the domain [-1, 1]
 Filters.contrastFilter = function(image, ratio) {
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 14 lines of code.
+
     let factor = Math.tan((ratio + 1) * Math.PI / 4);
 
     for (let x = 0; x < image.width; x++) {
@@ -289,7 +278,6 @@ Filters.contrastFilter = function(image, ratio) {
             image.setPixel(x, y, pixel);
         }
     }
-    // ----------- STUDENT CODE END ------------
     // Gui.alertOnce ('contrastFilter is not implemented yet');
     return image;
 };
@@ -297,8 +285,7 @@ Filters.contrastFilter = function(image, ratio) {
 // Note that the argument here is log(gamma)
 Filters.gammaFilter = function(image, logOfGamma) {
     const gamma = Math.exp(logOfGamma);
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 9 lines of code.
+
     for (let x = 0; x < image.width; x++) {
         for (let y = 0; y < image.height; y++) {
             const pixel = image.getPixel(x, y);
@@ -310,7 +297,6 @@ Filters.gammaFilter = function(image, logOfGamma) {
             image.setPixel(x, y, pixel);
         }
     }
-    // ----------- STUDENT CODE END ------------
     // Gui.alertOnce ('gammaFilter is not implemented yet');
     return image;
 };
@@ -327,8 +313,7 @@ Filters.gammaFilter = function(image, logOfGamma) {
 Filters.vignetteFilter = function(image, innerR, outerR) {
     // Let's ensure that innerR is at least 0.1 smaller than outerR
     innerR = clamp(innerR, 0, outerR - 0.1);
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 17 lines of code.
+
     let halfDiag = 0.5 * Math.sqrt(image.width ** 2 + image.height ** 2);
     let center = {x: image.width / 2, y: image.height / 2};
     let alpha;
@@ -339,7 +324,6 @@ Filters.vignetteFilter = function(image, innerR, outerR) {
             if (dist <= halfDiag * innerR) {
                 alpha = 1;
             } else if (dist < halfDiag * outerR) {
-                // alpha = 1 - (dist / halfDiag - innerR) / (outerR - innerR); // linear falloff
                 alpha = Math.cos(((dist / halfDiag - innerR) / (outerR - innerR)) * (Math.PI / 2)) ** 4; // natural falloff
             } else {
                 alpha = 0;
@@ -354,7 +338,6 @@ Filters.vignetteFilter = function(image, innerR, outerR) {
             image.setPixel(x, y, pixel);
         }
     }
-    // ----------- STUDENT CODE END ------------
     // Gui.alertOnce ('vignetteFilter is not implemented yet');
     return image;
 };
@@ -363,8 +346,7 @@ Filters.vignetteFilter = function(image, innerR, outerR) {
 * You will want to build a normalized CDF of the L channel in the image.
 */
 Filters.histogramEqualizationFilter = function(image) {
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 33 lines of code.
+
     let pixelCount = image.data.length / 4; // number of pixels
     let pdf = new Array(l).fill(0);
     let cdf = new Array(l).fill(0);
@@ -393,7 +375,6 @@ Filters.histogramEqualizationFilter = function(image) {
             image.setPixel(x, y, pixel);
         }
     } 
-    // ----------- STUDENT CODE END ------------
     // Gui.alertOnce ('histogramEqualizationFilter is not implemented yet');
     return image;
 };
@@ -419,8 +400,7 @@ Filters.grayscaleFilter = function(image) {
 // value of the pixel (luminance).
 // See: http://www.graficaobscura.com/interp/index.html
 Filters.saturationFilter = function(image, ratio) {
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 13 lines of code.
+
     for (let x = 0; x < image.width; x++) {
         for (let y = 0; y < image.height; y++) {
             const pixel = image.getPixel(x, y);
@@ -432,7 +412,6 @@ Filters.saturationFilter = function(image, ratio) {
             image.setPixel(x, y, pixel);
         }
     }
-    // ----------- STUDENT CODE END ------------
     // Gui.alertOnce ('saturationFilter is not implemented yet');
     return image;
 };
@@ -440,8 +419,7 @@ Filters.saturationFilter = function(image, ratio) {
 // Apply the Von Kries method: convert the image from RGB to LMS, divide by
 // the LMS coordinates of the white point color, and convert back to RGB.
 Filters.whiteBalanceFilter = function(image, white) {
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 23 lines of code.
+
     white = white.rgbToXyz().xyzToLms();
     for (let x = 0; x < image.width; x++) {
         for (let y = 0; y < image.height; y++) {
@@ -455,7 +433,6 @@ Filters.whiteBalanceFilter = function(image, white) {
             image.setPixel(x, y, pixel);
         }
     }
-    // ----------- STUDENT CODE END ------------
     // Gui.alertOnce ('whiteBalanceFilter is not implemented yet');
     return image;
 };
@@ -465,8 +442,7 @@ Filters.whiteBalanceFilter = function(image, white) {
 // map it to another
 //
 Filters.histogramMatchFilter = function(image, refImg) {
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 58 lines of code.
+
     let pixelCount = image.data.length / 4; // number of pixels
     let refCount = refImg.data.length / 4;
     let pdf = new Array(l).fill(0);
@@ -524,7 +500,6 @@ Filters.histogramMatchFilter = function(image, refImg) {
             image.setPixel(x, y, pixel);
         }
     } 
-    // ----------- STUDENT CODE END ------------
     // Gui.alertOnce ('histogramMatchFilter is not implemented yet');
     return image;
 };
@@ -538,8 +513,7 @@ Filters.gaussianFilter = function(image, sigma) {
     let newImg = image.createImg(image.width, image.height);
     // the filter window will be [-winR, winR] for a total diameter of roughly Math.round(3*sigma)*2+1;
     const winR = Math.round(sigma * 3);
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 58 lines of code.
+
     for (let x = 0; x < image.width; x++) {
         for (let y = 0; y < image.height; y++) {
             let newPx = new Pixel(0, 0, 0);
@@ -576,7 +550,6 @@ Filters.gaussianFilter = function(image, sigma) {
             newImg.setPixel(x, y, newPx);
         }
     }
-    // ----------- STUDENT CODE END ------------
     // Gui.alertOnce ('gaussianFilter is not implemented yet');
     return newImg;
 };
@@ -586,8 +559,7 @@ Filters.gaussianFilter = function(image, sigma) {
 * original image.
 */
 Filters.sharpenFilter = function(image) {
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 33 lines of code.
+
     /*let baseKernel = [[-1, -1, -1], 
     [-1, 9, -1], 
     [-1, -1, -1]];*/
@@ -626,7 +598,7 @@ Filters.sharpenFilter = function(image) {
         }
     }
     image = newImg;
-    // ----------- STUDENT CODE END ------------
+    
     // Gui.alertOnce ('sharpenFilter is not implemented yet');
     return image;
 };
@@ -693,8 +665,7 @@ Filters.edgeFilter = function(image) {
 // apply this seperately to each channel.
 Filters.medianFilter = function(image, winR) {
     // winR: the window will be  [-winR, winR];
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 36 lines of code.
+
     let newImg = image.createImg(image.width, image.height);
 
     for (let x = 0; x < image.width; x++) {
@@ -730,7 +701,7 @@ Filters.medianFilter = function(image, winR) {
         }
     }
     image = newImg;
-    // ----------- STUDENT CODE END ------------
+
     //Gui.alertOnce ('medianFilter is not implemented yet');
     return image;
 };
@@ -744,8 +715,6 @@ Filters.bilateralFilter = function(image, sigmaR, sigmaS) {
     const winR = Math.round((sigmaR + sigmaS) * 2);
     sigmaR = sigmaR * (Math.sqrt(2) * winR);
 
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 53 lines of code.
     let newImg = image.createImg(image.width, image.height);
 
     for (let x = 0; x < image.width; x++) {
@@ -795,7 +764,7 @@ Filters.bilateralFilter = function(image, sigmaR, sigmaS) {
         }
     }
     image = newImg;
-    // ----------- STUDENT CODE END ------------
+
     //Gui.alertOnce ('bilateralFilter is not implemented yet');
     return image;
 };
@@ -827,8 +796,6 @@ Filters.randomFilter = function(image) {
     // convert to grayscale
     //image = Filters.grayscaleFilter(image);
 
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 12 lines of code.
     for (let x = 0; x < image.width; x++) {
         for (let y = 0; y < image.height; y++) {
             const pixel = image.getPixel(x, y);
@@ -842,7 +809,7 @@ Filters.randomFilter = function(image) {
             image.setPixel(x, y, pixel);
         }
     }
-    // ----------- STUDENT CODE END ------------
+
     //Gui.alertOnce ('randomFilter is not implemented yet');
     return image;
 };
@@ -852,8 +819,6 @@ Filters.floydFilter = function(image) {
     // convert to grayscale
     //image = Filters.grayscaleFilter(image);
 
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 27 lines of code.
     for (let x = 0; x < image.width; x++) {
         for (let y = 0; y < image.height; y++) {
             const pixel = image.getPixel(x, y);
@@ -885,7 +850,6 @@ Filters.floydFilter = function(image) {
             }
         }
     }
-    // ----------- STUDENT CODE END ------------
     // Gui.alertOnce ('floydFilter is not implemented yet');
     return image;
 };
@@ -895,9 +859,7 @@ Filters.floydFilter = function(image) {
 Filters.orderedFilter = function(image) {
     // convert to gray scale
     //image = Filters.grayscaleFilter(image);
-
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 31 lines of code.        
+    
     let bayer4 = [[15, 7, 13, 5], 
                 [3, 11, 1, 9], 
                 [12, 4, 14, 6], 
@@ -926,7 +888,7 @@ Filters.orderedFilter = function(image) {
             image.setPixel(x, y, newPx);
         }
     }
-    // ----------- STUDENT CODE END ------------
+
     //Gui.alertOnce ('orderedFilter is not implemented yet');
     return image;
 };
@@ -936,8 +898,7 @@ Filters.orderedFilter = function(image) {
 // Call this function from filters that require sampling (e.g. scale, rotate)
 Filters.samplePixel = function(image, x, y, mode) {
     if (mode === "bilinear") {
-        // ----------- STUDENT CODE BEGIN ------------
-        // ----------- Our reference solution uses 21 lines of code.
+
         let newPx = new Pixel(0, 0, 0);
         let x1 = Math.max(0, Math.min(Math.floor(x), image.width - 1)), 
         x2 = Math.max(0, Math.min(x1 + 1, image.width - 1)),
@@ -949,11 +910,10 @@ Filters.samplePixel = function(image, x, y, mode) {
         newPx = newPx.plus(image.getPixel(x2, y2).multipliedBy((x - x1) * (y - y1)));
         newPx = newPx.dividedBy((x2 - x1) * (y2 - y1));
         return newPx;
-        // ----------- STUDENT CODE END ------------
+
         //Gui.alertOnce ('bilinear sampling is not implemented yet');
     } else if (mode === "gaussian") {
-        // ----------- STUDENT CODE BEGIN ------------
-        // ----------- Our reference solution uses 38 lines of code.
+
         let sigma = 1,
         winR = 3 * sigma;
         let gSum = 0, newPx = new Pixel(0, 0, 0);
@@ -981,8 +941,7 @@ Filters.samplePixel = function(image, x, y, mode) {
 // Translate the image by some x, y and using a requested method of sampling/resampling
 Filters.translateFilter = function(image, x, y, sampleMode) {
     // Note: set pixels outside the image to RGBA(0,0,0,0)
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 21 lines of code.
+
     const newImg = image.createImg(image.width, image.height);
     for (let i = 0; i < newImg.width; i++) {
         let newX = i - x;
@@ -997,15 +956,14 @@ Filters.translateFilter = function(image, x, y, sampleMode) {
         }
     }
     image = newImg;
-    // ----------- STUDENT CODE END ------------
+
     //Gui.alertOnce ('translateFilter is not implemented yet');
     return image;
 };
 
 // Scale the image by some ratio and using a requested method of sampling/resampling
 Filters.scaleFilter = function(image, ratio, sampleMode) {
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 19 lines of code.
+
     const newImg = image.createImg(image.width * ratio, image.height * ratio);
 
     for (let x = 0; x < newImg.width; x++) {
@@ -1015,7 +973,7 @@ Filters.scaleFilter = function(image, ratio, sampleMode) {
         }
     }
     image = newImg;
-    // ----------- STUDENT CODE END ------------
+
     //Gui.alertOnce ('scaleFilter is not implemented yet');
     return image;
 };
@@ -1023,8 +981,7 @@ Filters.scaleFilter = function(image, ratio, sampleMode) {
 // Rotate the image by some angle and using a requested method of sampling/resampling
 Filters.rotateFilter = function(image, radians, sampleMode) {
     // Note: set pixels outside the image to RGBA(0,0,0,0)
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 29 lines of code.
+
     let diag = Math.sqrt(image.width ** 2 + image.height ** 2); // diagonal length
     let oldCenter = {x: Math.floor(image.width / 2), y: Math.floor(image.height / 2)};
     // dimensions of the new canvas
@@ -1060,7 +1017,7 @@ Filters.rotateFilter = function(image, radians, sampleMode) {
         }
     }
     image = newImg;
-    // ----------- STUDENT CODE END ------------
+
     //Gui.alertOnce ('rotateFilter is not implemented yet');
     return image;
 };
@@ -1068,11 +1025,10 @@ Filters.rotateFilter = function(image, radians, sampleMode) {
 // Swirl the filter about its center. The rotation of the swirl should be in linear increase
 // along the radial axis up to radians
 Filters.swirlFilter = function(image, radians, sampleMode) {
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 26 lines of code.
+
     let center = {x: Math.floor(image.width / 2), y: Math.floor(image.height / 2)};
     let halfDiag = 0.5 * Math.sqrt(image.width ** 2 + image.height ** 2);
-    //let dimAngle = Math.atan(image.width / image.height);
+
     const newImg = image.createImg(image.width, image.height);
     for(let x = 0; x < image.width; x++) {
         for (let y = 0; y < image.height; y++) {
@@ -1087,7 +1043,7 @@ Filters.swirlFilter = function(image, radians, sampleMode) {
             let oldX = Math.cos(oldTheta) * dist + center.x;
             let oldY = Math.sin(oldTheta) * dist + center.y;
             if (oldX < 0 || oldX >= image.width || oldY < 0 || oldY >= image.height) {
-                //newImg.setPixel(x, y, new Pixel(0, 0, 0));
+
                 oldY = Math.max(0, Math.min(oldY, image.height - 1));
                 oldX = Math.max(0, Math.min(oldX, image.width - 1)); 
             }
@@ -1096,7 +1052,7 @@ Filters.swirlFilter = function(image, radians, sampleMode) {
         }
     }
     image = newImg;
-    // ----------- STUDENT CODE END ------------
+
     //Gui.alertOnce ('swirlFilter is not implemented yet');
     return image;
 };
@@ -1121,8 +1077,7 @@ Filters.getAlphaFilter = function(backgroundImg, foregroundImg) {
 // channel of the foreground image to blend two images.
 Filters.compositeFilter = function(backgroundImg, foregroundImg) {
     // Assume the input images are of the same sizes.
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 14 lines of code.
+
     for (let x = 0; x < backgroundImg.width; x++) {
         for (let y = 0; y < backgroundImg.height; y++) {
             const fg = foregroundImg.getPixel(x, y);
@@ -1133,7 +1088,7 @@ Filters.compositeFilter = function(backgroundImg, foregroundImg) {
             backgroundImg.setPixel(x, y, bg);
         }
     }
-    // ----------- STUDENT CODE END ------------
+
     //Gui.alertOnce ('compositeFilter is not implemented yet');
     return backgroundImg;
 };
@@ -1152,9 +1107,7 @@ Filters.morphFilter = function(initialImg, finalImg, alpha, sampleMode, linesFil
         [lines.final[i].x1, lines.final[i].y1] = [lines.final[i].y1, lines.final[i].x1];
     }
 
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 114 lines of code.
-    //console.log(lines); // {final(array10), initial(array10)}
+
     let p = 0.5, a = 0.01, b = 2;
     // Interpolate morph lines 
     const currentLines = new Array(lines.initial.length);
@@ -1165,7 +1118,7 @@ Filters.morphFilter = function(initialImg, finalImg, alpha, sampleMode, linesFil
                         y1: blend(lines.initial[i].y1, lines.final[i].y1, alpha)};
     }
     // warp background image
-    //const initialTemp = initialImg.createImg(initialImg.width, initialImg.height);
+
     let image = finalImg.createImg(finalImg.width, finalImg.height);
     for (let x = 0; x < image.width; x++) {
         for (let y = 0; y < image.height; y++) {
@@ -1186,7 +1139,7 @@ Filters.morphFilter = function(initialImg, finalImg, alpha, sampleMode, linesFil
 
         }
     }
-    // ----------- STUDENT CODE END ------------
+
     //Gui.alertOnce ('morphFilter is not implemented yet');
     return image;
 };
@@ -1203,7 +1156,6 @@ function warp(currentPx, currentLines, srcLines, p, a, b) {
             oldQ = {x: srcLines[i].x1, y: srcLines[i].y1};
 
         let pqLength = (currentQ.x - currentP.x) ** 2 + (currentQ.y - currentP.y) ** 2;
-                //let u = dot(vMinus(currentP, currentPx), vMinus(currentP, currentQ)) / norm(currentP, currentQ) ** 2);
         let u = dot(vMinus(currentP, currentPx), vMinus(currentP, currentQ)) / pqLength;
 
         pqLength = Math.sqrt(pqLength);
@@ -1212,7 +1164,6 @@ function warp(currentPx, currentLines, srcLines, p, a, b) {
         let oldLength = Math.sqrt((oldQ.x - oldP.x) ** 2 + (oldQ.y - oldP.y) ** 2);
         let oldPx = vPlus(oldP, vMultiply(vMinus(oldP, oldQ), u));
         oldPx = vPlus(oldPx, vMultiply(perpendicular(vMinus(oldP, oldQ)), v / oldLength));
-                //oldPx = vPlus(oldPx, vDivide(vMultiply(perpendicular(vMinus(oldP, oldQ)), v), oldLength));
 
         let dspl = vMinus(currentPx, oldPx); // displacement
 
@@ -1233,8 +1184,7 @@ function warp(currentPx, currentLines, srcLines, p, a, b) {
 
 // Use k-means to extract a pallete from an image
 Filters.paletteFilter = function(image, colorNum) {
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 89 lines of code.
+
     const newImg = image.createImg(Math.round(image.width + image.height / 6), image.height);
     let iteration = 50; // number of iterations before converges
     const means = new Array(colorNum);
@@ -1291,7 +1241,7 @@ Filters.paletteFilter = function(image, colorNum) {
         }
     }
     image = newImg;
-    // ----------- STUDENT CODE END ------------
+
     //Gui.alertOnce ('paletteFilter is not implemented yet');
     return image;
 };
@@ -1299,8 +1249,8 @@ Filters.paletteFilter = function(image, colorNum) {
 // Read the following paper and implement your own "painter":
 //      http://mrl.nyu.edu/publications/painterly98/hertzmann-siggraph98.pdf
 Filters.paintFilter = function(image, value) {
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 59 lines of code.
+
+    // in progress; just pixelation so far
     const newImg = image.createImg(image.width, image.height);
     let strokeR = Math.round(value * 10);
     let color;
@@ -1314,11 +1264,10 @@ Filters.paintFilter = function(image, value) {
                     }
                 }
             }
-            //newImg.setPixel(x, y, color);
         }
     }
     image = newImg;
-    // ----------- STUDENT CODE END ------------
+
     //Gui.alertOnce ('paintFilter is not implemented yet');
     return image;
 };
@@ -1330,8 +1279,7 @@ Filters.paintFilter = function(image, value) {
 *      http://www.cs.princeton.edu/courses/archive/spring19/cos426/papers/Kang09.pdf
 */
 Filters.xDoGFilter = function(image, value) {
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 70 lines of code.
+
     const newImg = image.createImg(image.width, image.height);
     const sigma1 = 1, sigma2 = 1.6 * sigma1;
     const winR1 = Math.round(sigma1 * 3), winR2 = Math.round(sigma2 * 3);
@@ -1365,7 +1313,7 @@ Filters.xDoGFilter = function(image, value) {
                 else realY = i;
                 newPx2 = newPx2.plus(image.getPixel(x, realY).multipliedBy(g));
             }
-            //if (x === 300 && y === 200) console.log(newPx1.minus(newPx2));
+
             newImg.setPixel(x, y, newPx1.minus(newPx2).multipliedBy(1000000));
         }
     }
@@ -1393,12 +1341,12 @@ Filters.xDoGFilter = function(image, value) {
                 else realX = i;
                 newPx2 = newPx2.plus(newImg.getPixel(realX, y).multipliedBy(g));
             }
-            //console.log(newPx1, newPx2);
+
             newImg.setPixel(x, y, newPx1.minus(newPx2).multipliedBy(1000000));
         }
     }
     image = newImg;
-    // ----------- STUDENT CODE END ------------
+
     //Gui.alertOnce ('xDoGFilter is not implemented yet');
     return image;
 };
@@ -1468,16 +1416,10 @@ function gradientMap(image) {
     image = Filters.grayscaleFilter(image);
     let imageData = image.getImageData();
 
-    //const grad_x = [], grad_Y = [];
-    const result = Sobel(imageData);
-    console.log(result);
-    //const sobelData = result[0];
-    const sobelData = result;
-    //let grad_x = result[1];
-    //let grad_y = result[2];
-    //console.log(sobelData, grad_x, grad_y);
 
-    //grad_x = Sobel(imageData);
+    const result = Sobel(imageData);
+    const sobelData = result;
+
     const sobelImg = new Image(image.width, image.height, sobelData);
     return sobelImg;
 }
@@ -1512,40 +1454,21 @@ function sobelKernel(image) {
     for (let x = 0; x < image.width; x++) {
         for (let y = 0; y < image.height; y++) {
             const pixelX = convolute(image, kernelX, x, y);
-            //if (x === 0 && y === 98) console.log(pixelX);
+
             grad_x[x][y] = pixelX.data[0];
             const pixelY = convolute(image, kernelY, x, y);
-            //if (x === 0 && y === 98) console.log(pixelY);
+
             grad_y[x][y] = pixelY.data[0];
-            //gradientMag[x][y] = Math.sqrt(grad_x[x][y] ** 2 + grad_y[x][y] ** 2);
+
             let magnitude = Math.sqrt(pixelX.data[0] ** 2 + pixelY.data[0] ** 2);
-            //if (x === 0 && y === 98) console.log(magnitude);
+
             gradientMag[x][y] = magnitude;
-            //if (x === 0 && y === 98) console.log(pixelX.data[0]/magnitude);
-            //if (x === 0 && y === 98) console.log(pixelY.data[0]/magnitude);
             let temp = {x: pixelX.data[0]/magnitude, y: pixelY.data[0]/magnitude};
-            /*if (temp.x < -1) console.log("x < -1");
-            if (temp.x > 1) console.log("x > 1");
-            if (temp.y < -1) console.log("y < -1");
-            if (temp.y > 1) console.log("y > 1");*/
-            /*if (isNaN(pixelX.data[0])) console.log("x nan");
-            if (isNaN(pixelY.data[0])) console.log("x nan");
-            if (magnitude === 0) console.log(pixelX.data[0], pixelY.data[0]);
-            if (magnitude === 0 && pixelX.data[0] < -1) console.log("x > 1");
-            if (magnitude === 0 && pixelY.data[0] < -1) console.log("y > 1");*/
-            //if (isNaN(temp.x)) console.log("x nan");
-            //if (isNaN(temp.y)) console.log("y nan");
-            //if (x === 0 && y === 98) console.log(temp);
             if (magnitude === 0) flow[x][y] = {x: pixelX.data[0], y: pixelY.data[0]};
             else flow[x][y] = {x: pixelX.data[0]/magnitude, y: pixelY.data[0]/magnitude};
-            //if (flow[x][y] === NaN) console.log("NaN");
+
         }
     }
-    //return [grad_x, grad_y, gradientMag, flow];
-    //console.log(flow);
-    //console.log(flow[580][380]);
-    //console.log(grad_x);
-    //console.log(grad_y);
     return [flow, gradientMag];
 }
 
@@ -1563,36 +1486,32 @@ function rotateFlow(flow, theta) {
 }
 
 function refineFlow(image, flow, gradientMag, kernel) {
-    //console.log(flow);
-    //console.log(flow[580][380]);
+
     let refined = new Array(flow.length);
     for (let i = 0; i < flow.length; i++) {
         refined[i] = new Array(flow[0].length).fill(0);
     }
     for (let x = 0; x < image.width; x++) {
         for (let y = 0; y < image.height; y++) {
-            //flow = computeNewVector(image, flow, gradientMag, x, y, kernel, "row");
+
             refined[x][y] = computeNewVector(image, flow, gradientMag, x, y, kernel, "row");
         }
     }
     flow = refined;
-    //console.log("1d convolve completed");
-    //console.log(flow[580][380]);
+
     for (let x = 0; x < image.width; x++) {
         for (let y = 0; y < image.height; y++) {
-            //flow = computeNewVector(image, flow, gradientMag, x, y, kernel, "column");
+
             refined[x][y] = computeNewVector(image, flow, gradientMag, x, y, kernel, "column");
         }
     }
     flow = refined;
-    //console.log("2d convolve completed");
-    //console.log(flow[580][380]);
+
     return flow;
 }
 
 function computeNewVector(image, flow, gradientMag, x, y, kernel, orientation) {
-    //console.log(flow[x][y]);
-    //console.log(flow);
+
     let t_x = flow[x][y];
     let t_new = {x: 0, y: 0};
     let wSum = 0;
@@ -1606,10 +1525,10 @@ function computeNewVector(image, flow, gradientMag, x, y, kernel, orientation) {
             let w_m = computeWm(gradientMag[x][y], gradientMag[r][y]);
             let w_d = computeWd(t_x, t_y);
             let weight = phi * w_s * w_m * w_d;
-            //t_new = vPlus(t_new, vMultiply(t_y, phi * w_s * w_m * w_d));
+
             t_new = vPlus(t_new, vMultiply(t_y, weight));
             wSum += weight;
-            //debugger;
+
         }
     } else {
         for (let c = y - kernel; c <= y + kernel; c++) {
@@ -1621,17 +1540,14 @@ function computeNewVector(image, flow, gradientMag, x, y, kernel, orientation) {
             let w_m = computeWm(gradientMag[x][y], gradientMag[x][c]);
             let w_d = computeWd(t_x, t_y);
             let weight = phi * w_s * w_m * w_d;
-            //t_new = vPlus(t_new, vMultiply(t_y, phi * w_s * w_m * w_d));
+
             t_new = vPlus(t_new, vMultiply(t_y, weight));
             wSum += weight;
         }
     }
     let magnitude = Math.sqrt(t_new.x ** 2 + t_new.y ** 2);
     t_new = vDivide(t_new, magnitude);
-    //t_new = vDivide(t_new, wSum);
-    //debugger;
-    //flow[x][y] = t_new;
-    //return flow;
+
     return t_new;
 }
 
@@ -1690,8 +1606,7 @@ function fDoG(image, flow, sigma_m, sigma_c) {
 
             // Phase 1: 1D DoG filter along the gradient direction
             for (let i = -winR_m; i <= winR_m; i++) {
-                //let sampleX1 = x + i * fl.x,
-                //sampleY1 = y + i * fl.y;
+
                 let sampleX1 = Math.round(x + i * fl.x),
                 sampleY1 = Math.round(y + i * fl.y);
                 if (sampleX1 < 0 || sampleX1 >= image.width || sampleY1 < 0 || sampleY1 >= image.height) continue;
@@ -1726,8 +1641,7 @@ function fDoG(image, flow, sigma_m, sigma_c) {
             // Phase 2: 1D Gaussian filter along the flow direction
             let g_m = 0, gSum_m = 0;
             for (let i = -winR_m; i <= winR_m; i++) {
-                //let sampleX1 = x + i * fl.x,
-                //sampleY1 = y + i * fl.y;
+
                 let sampleX1 = Math.round(x + i * fl.x),
                 sampleY1 = Math.round(y + i * fl.y);
                 if (sampleX1 < 0 || sampleX1 >= image.width || sampleY1 < 0 || sampleY1 >= image.height) continue;
@@ -1759,8 +1673,7 @@ function fDoG(image, flow, sigma_m, sigma_c) {
 // a bunch of different versions of your code if you want to
 // code up a bunch of different things for the art contest.
 Filters.customFilter = function(image, value) {
-    // ----------- STUDENT CODE BEGIN ------------
-    // ----------- Our reference solution uses 0 lines of code.
+
     const kernel = 5;
     let iteration = 2;
     //const sigma_m = 1.0, sigma_c = 0.5;
@@ -1773,17 +1686,10 @@ Filters.customFilter = function(image, value) {
     for (let i = 0; i < iteration; i++) {
         flow = refineFlow(image, flow, gradientMag, kernel);
     }
-    //console.log("flow initialization completed");
-    /*for (let i = 0; i < flow.length; i++) {
-        for (let j = 0; j < flow[0].length; j++) {
-            if (gradientMag[i][j] > 0.5) image.setPixel(i, j, new Pixel(0, 0, 0));
-            else image.setPixel(i, j, new Pixel(1, 1, 1));
-        }
-    }*/
+
 
     image = fDoG(image, flow, sigma_m, sigma_c);
-    //image = fDoG(image, flow, sigma_m, sigma_c);
-    // ----------- STUDENT CODE END ------------
+
     //Gui.alertOnce ('customFilter is not implemented yet');
     return image;
 };
